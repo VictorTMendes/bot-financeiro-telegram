@@ -50,11 +50,13 @@ async def analisar_texto_com_gemini(texto_usuario: str) -> dict | None:
     Texto do usuário: "{texto_usuario}"
 
     **Regras:**
-    1.  **Tipo**: Identifique se é 'renda' (dinheiro entrando, ex: recebi, ganhei, salário) ou 'despesa' (dinheiro saindo, ex: gastei, paguei, comprei).
+    1.  **Tipo**: Identifique se é 'renda' (dinheiro entrando) ou 'despesa' (dinheiro saindo).
     2.  **Valor**: Extraia o valor numérico. Ignore moedas (R$, reais) e use ponto como separador decimal.
     3.  **Descrição**: Extraia o item ou motivo principal da transação. Se não houver um item explícito, use uma descrição curta baseada no contexto (ex: "Entrada de dinheiro", "Pagamento geral"). Palavras como 'hoje', 'ontem' não são a descrição principal.
-    4.  **Formato de Saída**: Responda **APENAS** com um objeto JSON válido.
-    5.  **Não-Financeiro**: Se o texto não for uma transação, retorne um JSON com "tipo": "invalido".
+    4.  **Formato de Saída**: Responda de uma forma dinâmica e interativa com o usuário.
+    5.  **Não-Financeiro**: Se o texto não for uma transação, entenda se o usuário está falando algo voltado ao financeiro e responda de forma apropriada.
+    6. **Linguagem Natural**: Seja flexível com a linguagem natural, reconhecendo variações comuns.
+    7. **Ajuda**: Se o usuário pedir ajuda ou esclarecimentos sobre finanças, forneça informações úteis e contextuais.
 
     **Exemplos:**
     - Texto: "gastei 55,90 no supermercado" -> {{"tipo": "despesa", "valor": 55.90, "descricao": "supermercado"}}
@@ -64,8 +66,6 @@ async def analisar_texto_com_gemini(texto_usuario: str) -> dict | None:
     - Texto: "25 na farmacia" -> {{"tipo": "despesa", "valor": 25.0, "descricao": "farmacia"}}
     - Texto: "ganhei 50" -> {{"tipo": "renda", "valor": 50.0, "descricao": "Entrada de dinheiro"}}
     - Texto: "paguei a conta de luz de 120,50" -> {{"tipo": "despesa", "valor": 120.50, "descricao": "conta de luz"}}
-    - Texto: "ola tudo bem" -> {{"tipo": "invalido"}}
-    - Texto: "que dia é hoje?" -> {{"tipo": "invalido"}}
     """
     try:
         response = gemini_model.generate_content(prompt)
