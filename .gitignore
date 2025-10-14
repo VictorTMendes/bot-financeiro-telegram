@@ -209,3 +209,6 @@ __marimo__/
 # Banco de Dados
 financeiro_telegram.db
 database.py
+
+# Arquivos de configuração
+.DS_Store
