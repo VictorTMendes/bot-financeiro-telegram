@@ -18,3 +18,7 @@ O bot foi projetado para ser multi-usuário, armazenando os dados de cada pessoa
 -   **API do Bot:** `python-telegram-bot`
 -   **Banco de Dados:** SQLite3
 -   **Gerenciamento de Segredos:** `python-dotenv`
+
+## Demonstração do BOT
+![Demonstração do Bot](./assets/image.png)
+![Demonstração do Bot](./assets/imagem-1.png)
