@@ -44,28 +44,24 @@ async def analisar_texto_com_gemini(texto_usuario: str) -> dict | None:
     """Usa o Gemini para extrair dados financeiros de uma mensagem de texto de forma mais flexível."""
     
     prompt = f"""
-    Você é um especialista em processamento de linguagem natural para uma aplicação financeira.
-    Sua tarefa é analisar o texto do usuário e extrair os detalhes de uma transação financeira.
+    Sua única tarefa é analisar o texto do usuário e extrair detalhes de uma transação financeira.
+    Responda APENAS com um objeto JSON válido. Não envie nenhuma outra palavra ou frase.
 
     Texto do usuário: "{texto_usuario}"
 
-    **Regras:**
-    1.  **Tipo**: Identifique se é 'renda' (dinheiro entrando) ou 'despesa' (dinheiro saindo).
-    2.  **Valor**: Extraia o valor numérico. Ignore moedas (R$, reais) e use ponto como separador decimal.
-    3.  **Descrição**: Extraia o item ou motivo principal da transação. Se não houver um item explícito, use uma descrição curta baseada no contexto (ex: "Entrada de dinheiro", "Pagamento geral"). Palavras como 'hoje', 'ontem' não são a descrição principal.
-    4.  **Formato de Saída**: Responda de uma forma dinâmica e interativa com o usuário.
-    5.  **Não-Financeiro**: Se o texto não for uma transação, entenda se o usuário está falando algo voltado ao financeiro e responda de forma apropriada.
-    6. **Linguagem Natural**: Seja flexível com a linguagem natural, reconhecendo variações comuns.
-    7. **Ajuda**: Se o usuário pedir ajuda ou esclarecimentos sobre finanças, forneça informações úteis e contextuais.
+    **Regras para o JSON:**
+    1.  **"tipo"**: Deve ser "renda" (dinheiro entrando) ou "despesa" (dinheiro saindo).
+    2.  **"valor"**: Deve ser o valor numérico, usando ponto como separador decimal.
+    3.  **"descricao"**: Deve ser o motivo principal da transação. Se não houver um explícito, use um termo genérico como "Entrada de dinheiro".
+    4.  **Se não for uma transação**: Retorne um JSON com a chave "tipo" com o valor "invalido".
 
     **Exemplos:**
     - Texto: "gastei 55,90 no supermercado" -> {{"tipo": "despesa", "valor": 55.90, "descricao": "supermercado"}}
     - Texto: "recebi 100 reais hoje" -> {{"tipo": "renda", "valor": 100.0, "descricao": "Entrada de dinheiro"}}
     - Texto: "lanche da tarde, R$15" -> {{"tipo": "despesa", "valor": 15.0, "descricao": "lanche da tarde"}}
-    - Texto: "pagamento do freela 850" -> {{"tipo": "renda", "valor": 850.0, "descricao": "pagamento do freela"}}
     - Texto: "25 na farmacia" -> {{"tipo": "despesa", "valor": 25.0, "descricao": "farmacia"}}
     - Texto: "ganhei 50" -> {{"tipo": "renda", "valor": 50.0, "descricao": "Entrada de dinheiro"}}
-    - Texto: "paguei a conta de luz de 120,50" -> {{"tipo": "despesa", "valor": 120.50, "descricao": "conta de luz"}}
+    - Texto: "oi tudo bem?" -> {{"tipo": "invalido"}}
     """
     try:
         response = gemini_model.generate_content(prompt)
